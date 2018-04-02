@@ -44,8 +44,8 @@ btmModel <- function(decisions,anchors=NULL) {
 #' @return data frame of judges and infit values
 #' @examples
 #' mdl <- btmModel(decisions)
-#' probs <- mod1$probs
-#' infit <- btm_fit_2(probs)
+#' probs <- mdl$probs
+#' judge.infit <- btm_fit_2(probs,decisions)
 #' @export
 #' @import sirt
 #'
@@ -73,7 +73,6 @@ btm_fit_2 <- function( probs , decisions){
 #' scaledScores <- scaleThetas(modl$effects, 20, 0)
 #' @export
 #'
-# judge infit statistic
 scaleThetas <- function(mdlEffects,wRange,wlow){
   mnTheta <- min(mdlEffects$theta)
   rnge <- max(mdlEffects$theta) - mnTheta

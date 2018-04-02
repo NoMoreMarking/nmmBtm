@@ -19,6 +19,6 @@ Estimate judge infit
 }
 \examples{
 mdl <- btmModel(decisions)
-probs <- mod1$probs
-infit <- btm_fit_2(probs)
+probs <- mdl$probs
+judge.infit <- btm_fit_2(probs,decisions)
 }
