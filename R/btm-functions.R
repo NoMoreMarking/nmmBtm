@@ -103,9 +103,7 @@ btmBootstrap <- function(decisions,
          size = 1,
          replace = TRUE) {
   mdl <- btmModel(decisions, anchors = NULL)
-  bootstrapped <- mdl$effects
-  bootstrapped <-
-    bootstrapped %>% mutate(iteration = 0) %>% select(individual, theta, iteration)
+  bootstrapped <- NULL
   for (i in 1:iterations) {
     # bootstrap with replacement
     sampleDecisions <-
@@ -135,9 +133,7 @@ btmSimulate <-
   function(decisions,
            iterations = 10) {
     mdl <- btmModel(decisions, anchors = NULL)
-    bootstrapped <- mdl$effects
-    bootstrapped <-
-      bootstrapped %>% mutate(iteration = 0) %>% select(individual, theta, iteration)
+    bootstrapped <- NULL
     probs <-
       tibble(
         leftScript = decisions$chosen,
