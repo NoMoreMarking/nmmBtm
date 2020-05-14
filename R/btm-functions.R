@@ -83,3 +83,83 @@ scaleThetas <- function(mdlEffects,wRange,wlow){
   scaledScores <- data.frame(scaledScore=scaledScore,scaledScoreSE=scaledScoreSE)
   return(scaledScores)
 }
+
+#' Bootstrap
+#'
+#' @param decisions decisions from nmmMongo
+#' @param iterations number of boostrap iterations
+#' @param size size of bootstrap sample as a fraction
+#' @param replace boostrap with or without replacement
+#' @return Data frame of thetas
+#' @examples
+#  btmBootstrap(decisions, 10, size = 0.8, replace = FALSE)
+#' @export
+#' @import sirt
+#' @import dplyr
+#'
+#'
+btmBootstrap <- function(decisions,
+         iterations = 10,
+         size = 1,
+         replace = TRUE) {
+  mdl <- btmModel(decisions, anchors = NULL)
+  bootstrapped <- mdl$effects
+  bootstrapped <-
+    bootstrapped %>% mutate(iteration = 0) %>% select(individual, theta, iteration)
+  for (i in 1:iterations) {
+    # bootstrap with replacement
+    sampleDecisions <-
+      decisions %>% sample_frac(size = size, replace = replace)
+    smdl <- nmmBtm::btmModel(sampleDecisions, anchors = NULL)
+    personsSample <- smdl$effects
+    personsSample <-
+      personsSample %>% mutate(iteration = i) %>% select(individual, theta, iteration)
+    bootstrapped <- bind_rows(bootstrapped, personsSample)
+  }
+  return (bootstrapped)
+}
+
+#' Simulate
+#'
+#' @param decisions decisions from nmmMongo
+#' @param iterations number of simulations
+#' @return Data frame of thetas
+#' @examples
+#  btmSimulate(decisions, 10, size = 0.8, replace = FALSE)
+#' @export
+#' @import sirt
+#' @import dplyr
+#'
+#'
+btmSimulate <-
+  function(decisions,
+           iterations = 10) {
+    mdl <- btmModel(decisions, anchors = NULL)
+    bootstrapped <- mdl$effects
+    bootstrapped <-
+      bootstrapped %>% mutate(iteration = 0) %>% select(individual, theta, iteration)
+    probs <-
+      tibble(
+        leftScript = decisions$chosen,
+        rightScript = decisions$notChosen,
+        p = mdl$probs[, 1]
+      )
+    for (i in 1:iterations) {
+      # sample probability distribution
+      n <- nrow(decisions)
+      sampleDecisions <- probs %>% mutate(runif  = runif(n))
+      sampleDecisions <- sampleDecisions %>% mutate(
+        chosen = case_when(p >= runif ~ leftScript,
+                           TRUE ~ rightScript),
+        notChosen = case_when(p < runif ~ leftScript,
+                              TRUE ~ rightScript)
+      ) %>% select(chosen, notChosen)
+
+      smdl <- nmmBtm::btmModel(sampleDecisions, anchors = NULL)
+      personsSample <- smdl$effects
+      personsSample <-
+        personsSample %>% mutate(iteration = i) %>% select(individual, theta, iteration)
+      bootstrapped <- bind_rows(bootstrapped, personsSample)
+    }
+    return (bootstrapped)
+  }
