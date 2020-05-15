@@ -4,12 +4,14 @@
 \alias{btmSimulate}
 \title{Simulate}
 \usage{
-btmSimulate(decisions, iterations = 10)
+btmSimulate(decisions, anchors, iterations = 10)
 }
 \arguments{
 \item{decisions}{decisions from nmmMongo}
 
 \item{iterations}{number of simulations}
+
+\item{anchor}{named list of anchor values}
 }
 \value{
 Data frame of thetas

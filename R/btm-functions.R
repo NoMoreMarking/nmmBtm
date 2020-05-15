@@ -120,19 +120,20 @@ btmBootstrap <- function(decisions,
 #' Simulate
 #'
 #' @param decisions decisions from nmmMongo
+#' @param anchor named list of anchor values
 #' @param iterations number of simulations
 #' @return Data frame of thetas
 #' @examples
-#  btmSimulate(decisions, 10, size = 0.8, replace = FALSE)
+#  btmSimulate(decisions, NULL, 10)
 #' @export
 #' @import sirt
 #' @import dplyr
 #'
 #'
 btmSimulate <-
-  function(decisions,
+  function(decisions,anchors,
            iterations = 10) {
-    mdl <- btmModel(decisions, anchors = NULL)
+    mdl <- btmModel(decisions, anchors)
     bootstrapped <- NULL
     probs <-
       tibble(
@@ -151,7 +152,7 @@ btmSimulate <-
                               TRUE ~ rightScript)
       ) %>% select(chosen, notChosen)
 
-      smdl <- nmmBtm::btmModel(sampleDecisions, anchors = NULL)
+      smdl <- nmmBtm::btmModel(sampleDecisions, anchors)
       personsSample <- smdl$effects
       personsSample <-
         personsSample %>% mutate(iteration = i) %>% select(individual, theta, iteration)
