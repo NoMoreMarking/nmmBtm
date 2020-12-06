@@ -48,6 +48,7 @@ btmModel <- function(decisions,anchors=NULL) {
 #' judge.infit <- btm_fit_2(probs,decisions)
 #' @export
 #' @import sirt
+#' @import dplyr
 #'
 # judge infit statistic
 btm_fit_2 <- function( probs , decisions){
