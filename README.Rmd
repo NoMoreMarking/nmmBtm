@@ -35,6 +35,6 @@ Using the decisions data downloaded from www.nomoremarking.com you can fit your 
 ```{r decisions}
 library(nmmBtm)
 ## basic example code
-mdl <- btmModel(decisions)
+## mdl <- btmModel(decisions)
 ```
 
