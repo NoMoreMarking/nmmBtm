@@ -33,8 +33,9 @@ devtools::install_github("NoMoreMarking/nmmBtm")
 Using the decisions data downloaded from www.nomoremarking.com you can fit your own btm model using the following:
 
 ```{r decisions}
-library(nmmBtm)
-## basic example code
-## mdl <- btmModel(decisions)
+require(nmmBtm)
+data("decisions")
+mdl <- nmmBtm::btmModel(decisions)
+print(summary(mdl))
 ```
 
