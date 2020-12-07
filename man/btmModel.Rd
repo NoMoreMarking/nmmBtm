@@ -18,5 +18,7 @@ Bradley Terry model
 Fit the BTM Model to data from nmmMongo
 }
 \examples{
+data("decisions")
 mdl <- btmModel(decisions)
+print(summary(mdl))
 }

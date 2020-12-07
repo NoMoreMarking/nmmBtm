@@ -6,4 +6,6 @@
 *.Rproj
 Icon
 
-Icon[]
+Icon[
+]
+*.csv

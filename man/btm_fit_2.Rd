@@ -18,6 +18,7 @@ data frame of judges and infit values
 Estimate judge infit
 }
 \examples{
+data("decisions")
 mdl <- btmModel(decisions)
 probs <- mdl$probs
 judge.infit <- btm_fit_2(probs,decisions)

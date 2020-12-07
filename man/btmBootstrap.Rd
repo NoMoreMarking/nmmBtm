@@ -7,7 +7,7 @@
 btmBootstrap(decisions, iterations = 10, size = 1, replace = TRUE)
 }
 \arguments{
-\item{decisions}{decisions from nmmMongo}
+\item{decisions}{decisions datafile}
 
 \item{iterations}{number of boostrap iterations}
 
@@ -20,4 +20,7 @@ Data frame of thetas
 }
 \description{
 Bootstrap
+}
+\examples{
+data("decisions")
 }

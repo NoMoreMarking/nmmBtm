@@ -20,6 +20,7 @@ Data frame of scaled scores and standard errors
 Scaled scores
 }
 \examples{
+data("decisions")
 mdl <- btmModel(decisions)
-scaledScores <- scaleThetas(modl$effects, 20, 0)
+scaledScores <- scaleThetas(mdl$effects, 20, 0)
 }

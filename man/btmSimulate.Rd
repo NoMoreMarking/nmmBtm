@@ -19,3 +19,6 @@ Data frame of thetas
 \description{
 Simulate
 }
+\examples{
+data("decisions")
+}

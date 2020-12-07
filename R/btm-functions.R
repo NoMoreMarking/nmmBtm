@@ -4,7 +4,9 @@
 #' @param anchors Named list of anchor names and values
 #' @return Bradley Terry model
 #' @examples
+#' data("decisions")
 #' mdl <- btmModel(decisions)
+#' print(summary(mdl))
 #' @export
 #' @import sirt
 btmModel <- function(decisions,anchors=NULL) {
@@ -43,6 +45,7 @@ btmModel <- function(decisions,anchors=NULL) {
 #' @param decisions Decisions from nmmMongo
 #' @return data frame of judges and infit values
 #' @examples
+#' data("decisions")
 #' mdl <- btmModel(decisions)
 #' probs <- mdl$probs
 #' judge.infit <- btm_fit_2(probs,decisions)
@@ -70,6 +73,7 @@ btm_fit_2 <- function( probs , decisions){
 #' @param wlow Wanted low of scaled scores
 #' @return Data frame of scaled scores and standard errors
 #' @examples
+#' data("decisions")
 #' mdl <- btmModel(decisions)
 #' scaledScores <- scaleThetas(mdl$effects, 20, 0)
 #' @export
@@ -87,12 +91,13 @@ scaleThetas <- function(mdlEffects,wRange,wlow){
 
 #' Bootstrap
 #'
-#' @param decisions decisions from nmmMongo
+#' @param decisions decisions datafile
 #' @param iterations number of boostrap iterations
 #' @param size size of bootstrap sample as a fraction
 #' @param replace boostrap with or without replacement
 #' @return Data frame of thetas
 #' @examples
+#' data("decisions")
 #  btmBootstrap(decisions, 10, size = 0.8, replace = FALSE)
 #' @export
 #' @import sirt
@@ -125,6 +130,7 @@ btmBootstrap <- function(decisions,
 #' @param iterations number of simulations
 #' @return Data frame of thetas
 #' @examples
+#' data("decisions")
 #  btmSimulate(decisions, NULL, 10)
 #' @export
 #' @import sirt
