@@ -28,7 +28,7 @@ You can install the the development version from [GitHub](https://github.com/) w
 # install.packages("devtools")
 devtools::install_github("NoMoreMarking/nmmBtm")
 ```
-## Example
+## Examples
 
 Using the decisions data downloaded from www.nomoremarking.com you can fit your own btm model using the following:
 
@@ -39,3 +39,37 @@ mdl <- nmmBtm::btmModel(decisions)
 print(summary(mdl))
 ```
 
+You can estimate judge infit using the following:
+
+```{r infit}
+data("decisions")
+mdl <- btmModel(decisions)
+probs <- mdl$probs
+judge.infit <- btm_fit_2(probs,decisions)
+print(judge.infit)
+```
+
+You can convert theta values to scaled scores:
+
+```{r scaled}
+data("decisions")
+mdl <- btmModel(decisions)
+scaledScores <- scaleThetas(mdl$effects, 20, 0)
+print(scaledScores)
+```
+
+You can simulate a new set of model parameters from the initial model estimates:
+
+```{r simulate}
+data("decisions")
+sims <- btmSimulate(decisions, NULL, 2)
+print(head(sims))
+```
+
+You can bootstrap sample the decisions file to produce new estimates:
+
+```{r bootstrap-sample}
+data("decisions")
+bootstrapped <- btmBootstrap(decisions, 3, size = 0.8, replace = FALSE)
+print(head(bootstrapped))
+```
