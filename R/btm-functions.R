@@ -168,7 +168,7 @@ btmSimulate <-
     return (bootstrapped)
   }
 
-#' Estimate inter-rater reliability
+#' Estimate inter-rater reliability using split-halves
 #'
 #' @param iterations Number of iterations required (typically 100)
 #' @param decisions Decisions from NMM
