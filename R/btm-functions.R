@@ -167,3 +167,52 @@ btmSimulate <-
     }
     return (bootstrapped)
   }
+
+#' Estimate inter-rater reliability
+#'
+#' @param iterations Number of iterations required (typically 100)
+#' @param decisions Decisions from NMM
+#' @return Median inter-rater reliability
+#' @examples
+#' r <- interrater(iterations,decisions)
+#' @export
+#' @import sirt
+#'
+# judge infit statistic
+interrater <- function( iterations , decisions){
+  #dataframe to store results from each iteration
+  ir = data.frame(iteration = rep(0,iterations), pearson = rep(0,iterations), num_cand = rep(0,iterations))
+  #get the scores for the whole data set
+  mod1 <- btmModel(decisions)
+  #now to split up the judges into two groups
+  ip = as.data.frame(matrix(data=0,nrow=nrow(mod1$effects),ncol=2*iterations))
+  colnames(ip) = as.character(c(1:(2*iterations))) #dataframe to store the new groups
+  noj = length(unique(decisions$judgeName)) #number of judges
+  judges = data.frame(row = 1:noj, judgeName = unique(decisions$judgeName), rand = rep(0,noj), group = rep(0,noj))
+  #now to repeatedly calculate the correlation coefficents
+  for(i in 1:iterations){
+    ir[i,1] = i # fill iteration column
+    judges$rand = runif(noj, -1, 1)  #randomly split judges
+    judges <- judges[order(judges$rand),]
+    judges$row = 1:noj
+    judges$group = 2
+    judges$group[1:(noj/2)] <-1
+    #now split judgements
+    groups = merge(decisions,judges) 
+    g1 = groups[groups$group==1,]
+    g2 = groups[groups$group==2,]
+    df1 <- data.frame(chosen=g1$chosen, notChosen=g1$notChosen, result=1)
+    modg1 <- btmModel(df1)
+    #now to calculate the scores for group 2  
+    df2 <- data.frame(chosen=g2$chosen, notChosen=g2$notChosen, result=1)
+    modg2 <- btmModel(df2)
+    #put the two sets of scores into one dataframe
+    modg12 = merge(modg1$effects, modg2$effects, by="individual") #bodge in case different number of candidates in each rank
+    ir[i,2] =  cor(modg12$theta.x,modg12$theta.y, method="pearson") # fill correlation column
+    ir[i,4] = nrow(modg12)
+    #now to store the correlations
+    ip[,2*i-1] = c(modg12$theta.x, rep(0,nrow(mod1$effects)-nrow(modg12)))
+    ip[,2*i] = c(modg12$theta.y, rep(0,nrow(mod1$effects)-nrow(modg12)))
+  } # end of for i in 1:iterations loop
+  return(median(ir$pearson))
+}
