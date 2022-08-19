@@ -4,12 +4,10 @@
 \alias{bootstrapReliability}
 \title{Simulate the reliability if judged to 100%}
 \usage{
-bootstrapReliability(decisions, judges)
+bootstrapReliability(decisions)
 }
 \arguments{
 \item{decisions}{Decisions from nmmMongo}
-
-\item{judges}{Judges from nmmMongo}
 }
 \value{
 bootstrapped reliability when judged to 100%

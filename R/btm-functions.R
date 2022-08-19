@@ -42,12 +42,11 @@ btmModel <- function(decisions,anchors=NULL) {
 #' Simulate the reliability if judged to 100%
 #'
 #' @param decisions Decisions from nmmMongo
-#' @param judges Judges from nmmMongo
 #' @return bootstrapped reliability when judged to 100%
 #' @examples
 #' @export
 #' @import sirt
-bootstrapReliability <- function(decisions, judges){
+bootstrapReliability <- function(decisions){
   mdl <- btmModel(decisions)
 
   # bootstrap
@@ -79,6 +78,37 @@ bootstrapReliability <- function(decisions, judges){
   return(rel)
 }
 
+#' Visualise the reliability
+#'
+#' @param decisions Decisions from nmmMongo
+#' @return reliability plot
+#' @examples
+#' @export
+#' @import sirt
+visReliability <- function(decisions){
+  mdl <- btmModel(decisions)
+
+  # bootstrap
+  npersons <- nrow(mdl$effects)
+  ndecisions <- npersons * 10
+
+  ns <- seq(from = 5 * npersons, to = nrow(decisions))
+  relG <- NULL
+  for(n in ns){
+    sampleDecisions <- decisions %>% sample_n(size = n)
+    sampleMdl <- btmModel(sampleDecisions)
+    relG <- c(relG,sampleMdl$mle.rel)
+  }
+
+  reliabilityG <- tibble(decisions = ns, reliability = relG)
+  p <- ggplot(reliabilityG, aes(x = decisions, y=reliability))
+  p <- p + geom_point()
+  p <- p + geom_vline(xintercept = ndecisions, linetype = 'dotted')
+  p <- p + theme_light()
+  p
+
+  return(p)
+}
 
 
 #' Estimate judge infit
