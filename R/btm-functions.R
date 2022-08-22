@@ -39,13 +39,44 @@ btmModel <- function(decisions,anchors=NULL) {
   return(mod1)
 }
 
-#' Simulate the reliability if judged to 100%
+#' Probability of outcome
+#'
+#' @param a ability of person a
+#' @param b ability of person b
+#' @return probability of outcome
+#' @export
+expP <- function(a, b){
+  return(exp(a-b) / (1 + exp(a-b)))
+}
+
+#' Pass / Fail classification accuracy
+#'
+#' @param cutOff pass/fail theta
+#' @param persons persons from nmmMongo
+#' @return classification accuracy
+#' @export
+passFail <- function(cutOff, persons){
+  # Get the pass / fail
+  # For all those who have failed, what is probability of passing
+  probs <- persons %>% mutate(
+    fn = case_when(
+      level == 'Fail' ~ expP(trueScore,cutOff),
+      TRUE ~ 0
+    ),fp = case_when(
+      level == 'Pass' ~ expP(cutOff,trueScore),
+      TRUE ~ 0
+    )
+  ) %>% select(trueScore, fn, fp)
+  accs <- probs %>% summarise(fn = mean(fn), fp=mean(fp)) %>% mutate(acc = 1 - (fn+fp))
+  return(accs)
+}
+
+#' Simulate the reliability
 #'
 #' @param decisions Decisions from nmmMongo
-#' @return bootstrapped reliability when judged to 100%
-#' @examples
+#' @return reliability values
 #' @export
-#' @import sirt
+
 bootstrapReliability <- function(decisions){
   mdl <- btmModel(decisions)
 
@@ -60,21 +91,6 @@ bootstrapReliability <- function(decisions){
     rel <- c(rel,sampleMdl$mle.rel)
   }
 
-  ns <- seq(from = 5 * npersons, to = nrow(decisions))
-  relG <- NULL
-  for(n in ns){
-    sampleDecisions <- decisions %>% sample_n(size = n)
-    sampleMdl <- btmModel(sampleDecisions)
-    relG <- c(relG,sampleMdl$mle.rel)
-  }
-
-  reliabilityG <- tibble(decisions = ns, reliability = relG)
-  p <- ggplot(reliabilityG, aes(x = decisions, y=reliability))
-  p <- p + geom_point()
-  p <- p + geom_vline(xintercept = ndecisions, linetype = 'dotted')
-  p <- p + theme_light()
-  p
-
   return(rel)
 }
 
@@ -82,7 +98,6 @@ bootstrapReliability <- function(decisions){
 #'
 #' @param decisions Decisions from nmmMongo
 #' @return reliability plot
-#' @examples
 #' @export
 #' @import sirt
 visReliability <- function(decisions){
@@ -270,12 +285,12 @@ interrater <- function( iterations , decisions){
     judges$group = 2
     judges$group[1:(noj/2)] <-1
     #now split judgements
-    groups = merge(decisions,judges) 
+    groups = merge(decisions,judges)
     g1 = groups[groups$group==1,]
     g2 = groups[groups$group==2,]
     df1 <- data.frame(chosen=g1$chosen, notChosen=g1$notChosen, result=1)
     modg1 <- btmModel(df1)
-    #now to calculate the scores for group 2  
+    #now to calculate the scores for group 2
     df2 <- data.frame(chosen=g2$chosen, notChosen=g2$notChosen, result=1)
     modg2 <- btmModel(df2)
     #put the two sets of scores into one dataframe

@@ -2,7 +2,7 @@
 % Please edit documentation in R/btm-functions.R
 \name{bootstrapReliability}
 \alias{bootstrapReliability}
-\title{Simulate the reliability if judged to 100%}
+\title{Simulate the reliability}
 \usage{
 bootstrapReliability(decisions)
 }
@@ -10,8 +10,8 @@ bootstrapReliability(decisions)
 \item{decisions}{Decisions from nmmMongo}
 }
 \value{
-bootstrapped reliability when judged to 100%
+reliability values
 }
 \description{
-Simulate the reliability if judged to 100%
+Simulate the reliability
 }
