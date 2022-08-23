@@ -53,7 +53,7 @@ expP <- function(a, b){
 #'
 #' @param cutOff pass/fail theta
 #' @param persons persons from nmmMongo
-#' @return classification accuracy
+#' @return classification accuracy list with summary values & all person values
 #' @export
 passFail <- function(cutOff, persons){
   # Get the pass / fail
@@ -65,10 +65,13 @@ passFail <- function(cutOff, persons){
     ),fp = case_when(
       level == 'Pass' ~ expP(cutOff,trueScore),
       TRUE ~ 0
-    )
-  ) %>% select(trueScore, fn, fp)
-  accs <- probs %>% summarise(fn = mean(fn), fp=mean(fp)) %>% mutate(acc = 1 - (fn+fp))
-  return(accs)
+    ),
+    acc = 1 - (fn+fp)
+  )
+  accs <- probs %>% summarise(fn = mean(fn), fp=mean(fp), acc=mean(acc))
+  accList <- list(accs, probs)
+  names(accList) <- c('summary','probs')
+  return(accList)
 }
 
 #' Simulate the reliability

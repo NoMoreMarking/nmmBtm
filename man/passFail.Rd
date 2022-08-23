@@ -12,7 +12,7 @@ passFail(cutOff, persons)
 \item{persons}{persons from nmmMongo}
 }
 \value{
-classification accuracy
+classification accuracy list with summary values & all person values
 }
 \description{
 Pass / Fail classification accuracy
