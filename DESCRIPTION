@@ -1,7 +1,7 @@
 Package: nmmBtm
 Type: Package
 Title: Bradley Terry helpers for No More Marking Data
-Version: 1.4.0
+Version: 1.4.1
 Author: Chris Wheadon
 Maintainer: Chris Wheadon <chris@nomoremarking.com>
 Description: Fit the BTM to NMM data
