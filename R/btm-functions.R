@@ -173,7 +173,7 @@ btm_fit_2 <- function( probs , decisions){
   X_var1 <- X_var1 - X_exp1^2
   Z_1 <- ( 1 - X_exp1 ) / sqrt( X_var1 )
   dat0 <- cbind(decisions,Z_1,X_var1)
-  out <- dat0 %>% group_by(judgeName) %>%
+  out <- dat0 %>% group_by(judge) %>%
     summarise(out1 = sum(Z_1^2),n1=n(),wvar1=sum(X_var1),win1=sum(X_var1*Z_1^2)) %>% data.frame
   out$infit <- out$win1 /out$wvar1
   return(out)
