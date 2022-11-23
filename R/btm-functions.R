@@ -74,6 +74,29 @@ passFail <- function(cutOff, persons){
   return(accList)
 }
 
+#' Reliability with judges excluded
+#' 
+#' @param decisions Decisions from nmmMongo
+#' @return data frame with judge & reliability if excluded
+#' @export
+
+relJudgeExcluded <- function(decisions){
+  # Get a list of judges
+  judges <- unique(decisions$judge)
+  judgeV <- NULL
+  relV <- NULL
+  # Exclude one by one
+  for(j in judges){
+    tmp <- decisions %>% filter(judge!= j)
+    mdl <- btmModel(tmp)
+    r <- mdl$mle.rel
+    judgeV <- c(judgeV, j)
+    relV <- c(relV, r)
+  }
+  judgeR <- tibble(judge=judgeV, excRel = relV)
+  return (judgeR)
+}
+
 #' Simulate the reliability
 #'
 #' @param decisions Decisions from nmmMongo
